@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAP Playground</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      lang="javascript"
+      src="http://cdn.gigya.com/js/gigya.js?apikey=PUT_API_KEY_HERE"
+    ></script>
+  </head>
+  <body>
+    <div>
+      <button id="getScreenSet">Show ScreenSet</button>
+      <button id="getScreenSetInfo">Get ScreenSet List</button>
+      <select id="listScreenSets">
+        <option>Select ScreenSet</option>
+      </select>
+    </div>
+    <script>
+      function showScreenSetInfo(response) {
+        console.log(JSON.stringify(response));
+        var options = [];
+
+        response.screenSets.forEach((item) => {
+          Object.entries(item).forEach(([key, val]) => {
+            if (key == "screenSetID") {
+              var option = document.createElement("option");
+              option.text = val;
+              listScreenSets.options.add(option);
+              options.push(option.outerHTML);
+            }
+          });
+        });
+      }
+      $(document).on("click", "#getScreenSet", function () {
+        var value = document.getElementById("listScreenSets").value;
+        gigya.accounts.showScreenSet({
+          screenSet: value,
+        });
+      });
+      $(document).on("click", "#getScreenSetInfo", function () {
+        var screenSetParams = {
+          include: "screenSetID",
+          callback: showScreenSetInfo,
+        };
+        gigya.accounts.getScreenSets(screenSetParams);
+      });
+    </script>
+  </body>
+</html>
